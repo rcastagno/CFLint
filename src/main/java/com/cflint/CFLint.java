@@ -54,6 +54,9 @@ import cfml.parsing.cfscript.script.CFFunctionParameter;
 import cfml.parsing.cfscript.script.CFIfStatement;
 import cfml.parsing.cfscript.script.CFScriptStatement;
 
+// internal tools
+import com.cflint.tools.CFSeverity;
+
 public class CFLint implements IErrorReporter {
 
 	StackHandler handler = new StackHandler();
@@ -153,7 +156,7 @@ public class CFLint implements IErrorReporter {
 			} catch (final Exception e) {
 				e.printStackTrace();
 				bugs.add(new BugInfo.BugInfoBuilder().setMessageCode("FILE_ERROR")
-						.setFilename(folderOrFile.getAbsolutePath()).setMessage(e.getMessage()).setSeverity("ERROR")
+						.setFilename(folderOrFile.getAbsolutePath()).setMessage(e.getMessage()).setSeverity(CFSeverity.ERROR.getValue())
 						.build());
 			}
 		}

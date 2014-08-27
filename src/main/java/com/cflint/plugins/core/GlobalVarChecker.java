@@ -39,16 +39,6 @@ public class GlobalVarChecker implements CFLintScanner {
 				&& !context.getCallStack().isArgument(name)
 				&& context.getCallStack().getPluginVar(GlobalVarChecker.class, name) == null) {
 			context.getCallStack().setPluginVar(GlobalVarChecker.class, name, true);
-			final Element elem = context.getElement();
-			/*int line = 1;
-			int column = 1;
-			if(elem != null){
-				line = elem.getSource().getRow(elem.getBegin());
-				column = elem.getSource().getColumn(elem.getBegin());
-			}else{
-				line = expression.getLine();
-				column = expression.getColumn();
-			}*/
 			bugs.add(new BugInfo.BugInfoBuilder()
 					//.setLine(line)
 					//.setColumn(column + expression.getColumn())

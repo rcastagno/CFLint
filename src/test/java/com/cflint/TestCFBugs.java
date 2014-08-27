@@ -16,12 +16,9 @@ import com.cflint.plugins.core.NestedCFOutput;
 import com.cflint.plugins.core.TypedQueryNew;
 import com.cflint.plugins.core.VarScoper;
 
-import cfml.parsing.CFMLParser;
-import cfml.parsing.CFMLSource;
 import cfml.parsing.cfscript.ParseException;
 
 import static org.junit.Assert.*;
-import org.junit.Ignore;
 
 public class TestCFBugs {
 

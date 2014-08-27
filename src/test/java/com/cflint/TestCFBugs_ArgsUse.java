@@ -1,8 +1,5 @@
 package com.cflint;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.util.Collection;
 import java.util.List;
 
 import org.junit.Before;
@@ -13,8 +10,6 @@ import com.cflint.CFLint;
 import com.cflint.StackHandler;
 import com.cflint.plugins.core.ArgVarChecker;
 
-import cfml.parsing.CFMLParser;
-import cfml.parsing.CFMLSource;
 import cfml.parsing.cfscript.ParseException;
 
 import static org.junit.Assert.*;

@@ -1,20 +1,10 @@
 package com.cflint;
-/**
- * tests from 
- * https://github.com/mschierberl/varscoper/blob/master/varScoper.cfc
- * 
- */
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
+
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
 import java.util.List;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runners.Parameterized;
 
 import com.cflint.BugInfo;
 import com.cflint.CFLint;

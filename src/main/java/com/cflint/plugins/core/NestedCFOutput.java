@@ -9,25 +9,24 @@ import com.cflint.BugInfo;
 import com.cflint.BugList;
 import com.cflint.plugins.CFLintScanner;
 import com.cflint.plugins.Context;
+import com.cflint.tools.CFTool;
 
 @Extension
-public class OutputParmMissing implements CFLintScanner {
-	
-	// A Railo server automatically sets this to false. If using a Railo server, do not use this.
+public class NestedCFOutput implements CFLintScanner {
 
 	public void expression(final CFExpression expression, final Context context, final BugList bugs) {
 	}
 
 	public void element(final Element element, final Context context, final BugList bugs) {
-		if (// element.getName().equals("cfcomponent") ||
-		element.getName().equals("cffunction")) {
-			final String outputAttr = element.getAttributeValue("output");
-			if (outputAttr == null) {
+		if (element.getName().equals("cfoutput")) {
+			final Element parent = CFTool.getNamedParent(element, "cfoutput");
+			if (parent != null && parent.getAttributeValue("query") != null
+					&& parent.getAttributeValue("group") == null) {
 				final int line = element.getSource().getRow(element.getBegin());
 				final int column = element.getSource().getColumn(element.getBegin());
-				bugs.add(new BugInfo.BugInfoBuilder().setLine(line).setColumn(column).setMessageCode("OUTPUT_ATTR")
-						.setSeverity("INFO").setFilename(context.getFilename()).setFunction(context.getFunctionName())
-						.setMessage(element.getName() + " should have @output='false' ").build());
+				bugs.add(new BugInfo.BugInfoBuilder().setLine(line).setColumn(column).setMessageCode("NESTED_CFOUTPUT")
+						.setSeverity("ERROR").setFilename(context.getFilename()).setFunction(context.getFunctionName())
+						.setMessage("Nested CFOutput, outer CFOutput has @query.").build());
 			}
 		}
 	}
