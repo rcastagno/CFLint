@@ -11,11 +11,6 @@ mvn clean install
 ```
 	
 #### Building CFParser *(optional)*
-Maven will pull cfparser from maven central repository.  However if you want to build cfparser separately:
-```
-git clone https://github.com/cfparser/cfparser.git
-cd cfparser
-mvn clean install
-```
+Maven will pull cfparser from maven central repository.  However if you want to build cfparser separately see https://github.com/cfparser/cfparser
 
 If you have issues, please let us know.		
