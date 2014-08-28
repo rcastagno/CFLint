@@ -29,7 +29,7 @@ public class CFDumpChecker implements CFLintScanner {
 	
 	public void element(final Element element, final Context context, final BugList bugs) {
 		String tagName = element.getName();
-		if (tagName.equalsIgnoreCase(cfmlTagCheck)){
+		if (tagName.contains(cfmlTagCheck)){
 			int begLine = element.getSource().getRow(element.getBegin());
 			bugs.add(new BugInfo.BugInfoBuilder().setLine(begLine).setMessageCode(messageCode)
 				.setSeverity(CFSeverity.WARNING.getValue()).setFilename(context.getFilename())

@@ -23,8 +23,8 @@ public class TestCFDumpChecker {
 
 	@Test
 	public void test_BAD() throws ParseException, IOException {
-		final String cfcSrc = "<CFDUMP" +
-				    "var = \"#variable#\">";
+		final String cfcSrc = "<CFDUMP " +
+				    " var = \"#variable#\">";
 		final CFLint cfBugs = new CFLint(new CFDumpChecker());
 		cfBugs.process(cfcSrc, "test");
 		assertEquals(1, cfBugs.getBugs().getBugList().size());

@@ -23,13 +23,13 @@ public class TestCFInsertTagChecker {
 
 	@Test
 	public void test_BAD() throws ParseException, IOException {
-		final String cfcSrc = "<cfinsert" +
-			    "dataSource = \"data source name\"" + 
-			    "tableName = \"table name\"" + 
-			    "formFields = \"formfield1, formfield2, ...\"" + 
-			    "password = \"password\"" + 
-			    "tableOwner = \"owner\"" + 
-			    "tableQualifier = \"table qualifier\"" +  
+		final String cfcSrc = "<cfinsert " +
+			    "dataSource = \"data source name\" " + 
+			    "tableName = \"table name\" " + 
+			    "formFields = \"formfield1, formfield2, ...\" " + 
+			    "password = \"password\" " + 
+			    "tableOwner = \"owner\" " + 
+			    "tableQualifier = \"table qualifier\" " +  
 			    "username = \"user name\">";
 		final CFLint cfBugs = new CFLint(new CFInsertTagChecker());
 		cfBugs.process(cfcSrc, "test");

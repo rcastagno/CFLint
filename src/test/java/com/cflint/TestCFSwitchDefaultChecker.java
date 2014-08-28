@@ -24,7 +24,7 @@ public class TestCFSwitchDefaultChecker {
 	}
 
 	@Test
-	public void test_OK() throws ParseException, IOException {
+	public void testOK() throws ParseException, IOException {
 		final String cfcSrc = "<cfswitch expression=\"#score#\">" +
 			    "<cfcase value=\"10\">" +
 			    "    <cfset grade=\"A\">" +
