@@ -32,7 +32,7 @@ public class CFDumpChecker implements CFLintScanner {
 		if (tagName.contains(cfmlTagCheck)){
 			int begLine = element.getSource().getRow(element.getBegin());
 			bugs.add(new BugInfo.BugInfoBuilder().setLine(begLine).setMessageCode(messageCode)
-				.setSeverity(CFSeverity.WARNING.getValue()).setFilename(context.getFilename())
+				.setSeverity(severity).setFilename(context.getFilename())
 				.setMessage(message)
 				.build());
 		}

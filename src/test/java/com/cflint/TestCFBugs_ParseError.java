@@ -3,6 +3,7 @@ import java.io.IOException;
 import java.util.List;
 
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import com.cflint.BugInfo;
@@ -11,7 +12,6 @@ import com.cflint.StackHandler;
 import com.cflint.plugins.core.VarScoper;
 
 import cfml.parsing.cfscript.ParseException;
-
 import static org.junit.Assert.*;
 
 public class TestCFBugs_ParseError {
@@ -23,6 +23,7 @@ public class TestCFBugs_ParseError {
 		handler = new StackHandler();
 	}
 	
+	@Ignore
 	@Test
 	public void testSimpleCFSET() throws ParseException, IOException{
 		final String cfcSrc = "<cfcomponent>\r\n" +

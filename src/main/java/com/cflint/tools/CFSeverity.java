@@ -4,10 +4,13 @@ package com.cflint.tools;
 */
 
 public enum CFSeverity {
-	INFO("Info"),
-	WARNING("Warning"),
-	ERROR("Error"),
-	FATAL("Fatal");
+	COSMETIC("Cosmetic"),		// low priority
+	INFO("Info"),				// low priority
+	WARNING("Warning"),			// medium priority
+	MAJOR("Major"),				// high priority
+	SEVERE("Severe"),			// high priority
+	CRITICAL("Critical"),		// high priority
+	FATAL("Fatal");				// high priority
 
 	private final String value;
 

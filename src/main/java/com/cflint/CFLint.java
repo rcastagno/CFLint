@@ -20,15 +20,10 @@ import com.cflint.listeners.ProgressMonitorListener;
 import com.cflint.listeners.ScanProgressListener;
 import com.cflint.plugins.CFLintScanner;
 import com.cflint.plugins.Context;
-import com.cflint.plugins.core.ArgDefChecker;
-import com.cflint.plugins.core.ArgVarChecker;
-import com.cflint.plugins.core.GlobalVarChecker;
-import com.cflint.plugins.core.NestedCFOutput;
-import com.cflint.plugins.core.OutputParmMissing;
-import com.cflint.plugins.core.QueryParamChecker;
-import com.cflint.plugins.core.TypedQueryNew;
-import com.cflint.plugins.core.VarScoper;
+import com.cflint.plugins.core.*;
 import com.cflint.tools.CFLintFilter;
+import com.cflint.tools.CFSeverity;
+import com.cflint.CFLintDefaults;
 
 import net.htmlparser.jericho.Element;
 import net.htmlparser.jericho.Source;
@@ -54,22 +49,12 @@ import cfml.parsing.cfscript.script.CFFunctionParameter;
 import cfml.parsing.cfscript.script.CFIfStatement;
 import cfml.parsing.cfscript.script.CFScriptStatement;
 
-// internal tools
-import com.cflint.tools.CFSeverity;
-
 public class CFLint implements IErrorReporter {
 
 	StackHandler handler = new StackHandler();
-	boolean inFunction = false;
-	boolean inAssignment = false;
-	boolean inComponent = false;
 	BugList bugs;
 	List<CFLintScanner> extensions = new ArrayList<CFLintScanner>();
 	List<String> allowedExtensions = new ArrayList<String>();
-	boolean verbose = false;
-	boolean quiet = false;
-	boolean showProgress = false;
-	boolean progressUsesThread = true;
 
 	// constants
 	final String cfcExtension = ".cfc";
@@ -82,8 +67,22 @@ public class CFLint implements IErrorReporter {
 	List<ScanProgressListener> scanProgressListeners = new ArrayList<ScanProgressListener>();
 
 	public CFLint() {
-		this(new NestedCFOutput(), new TypedQueryNew(), new VarScoper(), new ArgVarChecker(), new ArgDefChecker(),
-				new OutputParmMissing(), new GlobalVarChecker(), new QueryParamChecker());
+		this(
+			new NestedCFOutput(), 
+			new TypedQueryNew(), 
+			new VarScoper(), 
+			new ArgVarChecker(), 
+			new ArgDefChecker(),
+			new OutputParmMissing(), 
+			new GlobalVarChecker(), 
+			new QueryParamChecker(),
+			new CFDumpChecker(),
+			new CFInsertTagChecker(),
+			new CFModuleTagChecker(),
+			new CFSwitchDefaultChecker(),
+			new CFUpdateTagChecker(),
+			new SelectStarChecker()
+			);
 	}
 
 	public CFLint(final CFLintScanner... bugsScanners) {
@@ -109,10 +108,10 @@ public class CFLint implements IErrorReporter {
 
 	public void scan(final String folder) {
 		final File f = new File(folder);
-		if (showProgress) {
+		if (CFLintDefaults.showProgress) {
 			final ProgressMonitorListener progressMonitorListener = new ProgressMonitorListener(progressMonitorName);
 			addScanProgressListener(progressMonitorListener);
-			if (progressUsesThread) {
+			if (CFLintDefaults.progressUsesThread) {
 				new Thread(new Runnable() {
 					
 					public void run() {
@@ -155,9 +154,12 @@ public class CFLint implements IErrorReporter {
 				process(src, folderOrFile.getAbsolutePath());
 			} catch (final Exception e) {
 				e.printStackTrace();
-				bugs.add(new BugInfo.BugInfoBuilder().setMessageCode("FILE_ERROR")
-						.setFilename(folderOrFile.getAbsolutePath()).setMessage(e.getMessage()).setSeverity(CFSeverity.ERROR.getValue())
-						.build());
+				if (CFLintDefaults.reportParseErrors) {
+					bugs.add(new BugInfo.BugInfoBuilder().setMessageCode("FILE_ERROR")
+							.setFilename(folderOrFile.getAbsolutePath()).setMessage(e.getMessage()).
+									setSeverity(CFSeverity.WARNING.getValue())
+							.build());
+				}
 			}
 		}
 	}
@@ -210,8 +212,8 @@ public class CFLint implements IErrorReporter {
 
 	private void process(final Element elem, final String space, final String filename, final String functionName)
 			throws ParseException, IOException {
-		final Context context = new Context(filename, elem, functionName, inAssignment, handler);
-		context.setInComponent(inComponent);
+		final Context context = new Context(filename, elem, functionName, CFLintDefaults.inAssignment, handler);
+		context.setInComponent(CFLintDefaults.inComponent);
 
 		for (final CFLintScanner plugin : extensions) {
 			plugin.element(elem, context, bugs);
@@ -232,9 +234,9 @@ public class CFLint implements IErrorReporter {
 				} catch (final Exception npe) {
 					final int line = elem.getSource().getRow(elem.getBegin());
 					final int column = elem.getSource().getColumn(elem.getBegin());
-					if (!quiet) {
+					if (!CFLintDefaults.quiet) {
 						System.err.println("Error in: " + shortSource(elem.getSource(), line) + " @ " + line + ":");
-						if (verbose) {
+						if (CFLintDefaults.verbose) {
 							npe.printStackTrace(System.err);
 						}
 					}
@@ -269,16 +271,16 @@ public class CFLint implements IErrorReporter {
 		}
 
 		if (elem.getName().equals("cffunction")) {
-			inFunction = true;
+			CFLintDefaults.inFunction = true;
 			handler.push("function");
 			processStack(elem.getChildElements(), space + " ", filename, elem.getAttributeValue("name"));
-			inFunction = false;
+			CFLintDefaults.inFunction = false;
 			handler.pop();
 		} else if (elem.getName().equals("cfcomponent")) {
-			inComponent = true;
+			CFLintDefaults.inComponent = true;
 			handler.push("component");
 			processStack(elem.getChildElements(), space + " ", filename, elem.getAttributeValue("name"));
-			inComponent = false;
+			CFLintDefaults.inComponent = false;
 			handler.pop();
 		} else if (elem.getName().equalsIgnoreCase("cfquery")) {
 			final List<Element> list = elem.getAllElements();
@@ -317,8 +319,8 @@ public class CFLint implements IErrorReporter {
 
 	private void process(final CFScriptStatement expression, final String filename, final Element elem,
 			final String functionName) {
-		final Context context = new Context(filename, elem, functionName, inAssignment, handler);
-		context.setInComponent(inComponent);
+		final Context context = new Context(filename, elem, functionName, CFLintDefaults.inAssignment, handler);
+		context.setInComponent(CFLintDefaults.inComponent);
 
 		for (final CFLintScanner plugin : extensions) {
 			plugin.expression(expression, context, bugs);
@@ -331,9 +333,9 @@ public class CFLint implements IErrorReporter {
 		} else if (expression instanceof CFExpressionStatement) {
 			process(((CFExpressionStatement) expression).getExpression(), filename, elem, functionName);
 		} else if (expression instanceof CFCompDeclStatement) {
-			inComponent = true;
+			CFLintDefaults.inComponent = true;
 			process(((CFCompDeclStatement) expression).getBody(), filename, elem, functionName);
-			inComponent = false;
+			CFLintDefaults.inComponent = false;
 		} else if (expression instanceof CFForStatement) {
 			process(((CFForStatement) expression).getInit(), filename, elem, functionName);
 			process(((CFForStatement) expression).getCond(), filename, elem, functionName);
@@ -352,17 +354,17 @@ public class CFLint implements IErrorReporter {
 			}
 		} else if (expression instanceof CFFuncDeclStatement) {
 			final CFFuncDeclStatement function = (CFFuncDeclStatement) expression;
-			inFunction = true;
+			CFLintDefaults.inFunction = true;
 			handler.push("function");
 			if ("init".equals(function.getName())) {
-				inFunction = false;
+				CFLintDefaults.inFunction = false;
 			}
 
 			for (final CFFunctionParameter param : function.getFormals()) {
 				handler.addArgument(param.getName());
 			}
 			process(function.getBody(), filename, elem, function.getName());
-			inFunction = false;
+			CFLintDefaults.inFunction = false;
 			handler.pop();
 		} else {
 		}
@@ -370,8 +372,8 @@ public class CFLint implements IErrorReporter {
 
 	private void process(final CFExpression expression, final String filename, final Element elem,
 			final String functionName) {
-		final Context context = new Context(filename, elem, functionName, inAssignment, handler);
-		context.setInComponent(inComponent);
+		final Context context = new Context(filename, elem, functionName, CFLintDefaults.inAssignment, handler);
+		context.setInComponent(CFLintDefaults.inComponent);
 
 		for (final CFLintScanner plugin : extensions) {
 			plugin.expression(expression, context, bugs);
@@ -379,9 +381,9 @@ public class CFLint implements IErrorReporter {
 		if (expression instanceof CFUnaryExpression) {
 			process(((CFUnaryExpression) expression).getSub(), filename, elem, functionName);
 		} else if (expression instanceof CFAssignmentExpression) {
-			inAssignment = true;
+			CFLintDefaults.inAssignment = true;
 			process(((CFAssignmentExpression) expression).getLeft(), filename, elem, functionName);
-			inAssignment = false;
+			CFLintDefaults.inAssignment = false;
 			process(((CFAssignmentExpression) expression).getRight(), filename, elem, functionName);
 		} else if (expression instanceof CFBinaryExpression) {
 			process(((CFBinaryExpression) expression).getLeft(), filename, elem, functionName);
@@ -465,11 +467,11 @@ public class CFLint implements IErrorReporter {
 	}
 
 	public void setVerbose(final boolean verbose) {
-		this.verbose = verbose;
+		CFLintDefaults.verbose = verbose;
 	}
 
 	public void setQuiet(final boolean quiet) {
-		this.quiet = quiet;
+		CFLintDefaults.quiet = quiet;
 	}
 
 	public void addScanProgressListener(final ScanProgressListener scanProgressListener) {
@@ -494,10 +496,10 @@ public class CFLint implements IErrorReporter {
 	}
 
 	public void setShowProgress(final boolean showProgress) {
-		this.showProgress = showProgress;
+		CFLintDefaults.showProgress = showProgress;
 	}
 
 	public void setProgressUsesThread(final boolean progressUsesThread) {
-		this.progressUsesThread = progressUsesThread;
+		CFLintDefaults.progressUsesThread = progressUsesThread;
 	}
 }

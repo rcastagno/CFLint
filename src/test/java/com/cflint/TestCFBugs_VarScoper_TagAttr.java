@@ -13,6 +13,7 @@ import java.util.Collection;
 import java.util.List;
 
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
@@ -28,11 +29,13 @@ public class TestCFBugs_VarScoper_TagAttr {
 	final String tagName;
 	final String attribute;
 
+	@Ignore
 	@Before
 	public void setUp() {
 		handler = new StackHandler();
 	}
 
+	@Ignore
 	@Parameterized.Parameters(name = "{0}")
 	public static Collection<String[]> primeNumbers() {
 		List<String[]> retval = new ArrayList<String[]>();
@@ -52,23 +55,27 @@ public class TestCFBugs_VarScoper_TagAttr {
 		return retval;
 	}
 
+	@Ignore
 	public TestCFBugs_VarScoper_TagAttr(final String tagName, final String attribute) {
 		super();
 		this.tagName = tagName;
 		this.attribute = attribute;
 	}
 
+	@Ignore
 	@Test
 	public void testUnvarrd() throws ParseException, IOException {
 		runTagAttrTest(tagName.toLowerCase(), attribute.toLowerCase(), "xx");
 		runTagAttrTest(tagName, attribute, "xx");
 	}
+	@Ignore
 	@Test
 	public void testVarrd() throws ParseException, IOException {
 		runTagAttrTestVard(tagName.toLowerCase(), attribute.toLowerCase(), "xx");
 		runTagAttrTestVard(tagName, attribute, "xx");
 	}
-	
+
+	@Ignore
 	@Test
 	public void testDotVarrd() throws ParseException, IOException {
 		runTagAttrDotVarTest(tagName.toLowerCase(), attribute.toLowerCase(), "zz.xx","zz");
@@ -76,6 +83,7 @@ public class TestCFBugs_VarScoper_TagAttr {
 		runTagAttrDotVarTest(tagName, attribute, "this.xx", "zz");
 	}
 
+	@Ignore
 	public void runTagAttrTest(final String tag, final String attr, final String variable) throws ParseException,
 			IOException {
 		final String cfcSrc = "<cfcomponent>\r\n" + "<cffunction name=\"test\">\r\n" + "   <" + tag + " " + attr
@@ -89,7 +97,8 @@ public class TestCFBugs_VarScoper_TagAttr {
 		assertEquals(variable, result.get(0).getVariable());
 		assertEquals(3, result.get(0).getLine());
 	}
-	
+
+	@Ignore
 	public void runTagAttrDotVarTest(final String tag, final String attr, final String variable, final String initVar) throws ParseException,
 		IOException {
 		System.out.println("test tag: " +tag);
@@ -101,6 +110,7 @@ public class TestCFBugs_VarScoper_TagAttr {
 	assertEquals(0, cfBugs.getBugs().getBugList().size());
 	}
 
+	@Ignore
 	public void runTagAttrTestVard(final String tag, final String attr, final String variable) throws ParseException,
 			IOException {
 		final String cfcSrc = "<cfcomponent>\r\n" + "<cffunction name=\"test\">\r\n" + "   <cfset var " + variable

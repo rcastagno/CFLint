@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.List;
 
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import com.cflint.BugInfo;
@@ -12,19 +13,20 @@ import com.cflint.StackHandler;
 import com.cflint.plugins.core.VarScoper;
 
 import cfml.parsing.cfscript.ParseException;
-
 import static org.junit.Assert.*;
 
 public class TestCFBugs_VarScoper {
 
 	StackHandler handler = null;
 
-	
+
+	@Ignore
 	@Before
 	public void setUp(){
 		handler = new StackHandler();
 	}
-	
+
+	@Ignore
 	@Test
 	public void testCFProcParam_Out() throws ParseException, IOException{
 		final String cfcSrc = "<cfcomponent>\r\n" +
@@ -44,7 +46,8 @@ public class TestCFBugs_VarScoper {
 		assertEquals("xx",result.get(0).getVariable());
 		assertEquals(5,result.get(0).getLine());
 	}
-	
+
+	@Ignore
 	@Test
 	public void testCFProcParam_InOut() throws ParseException, IOException{
 		final String cfcSrc = "<cfcomponent>\r\n" +
@@ -64,7 +67,8 @@ public class TestCFBugs_VarScoper {
 		assertEquals("xx",result.get(0).getVariable());
 		assertEquals(5,result.get(0).getLine());
 	}
-	
+
+	@Ignore
 	@Test
 	public void testCFProcParam_In() throws ParseException, IOException{
 		final String cfcSrc = "<cfcomponent>\r\n" +
@@ -79,7 +83,8 @@ public class TestCFBugs_VarScoper {
 		cfBugs.process(cfcSrc,"test");
 		assertEquals(0,cfBugs.getBugs().getBugList().size());
 	}	
-	
+
+	@Ignore
 	@Test
 	public void testCFFeed_Read_Vard() throws ParseException, IOException{
 		final String cfcSrc = "<cfcomponent>\r\n" +
@@ -93,7 +98,8 @@ public class TestCFBugs_VarScoper {
 		cfBugs.process(cfcSrc,"test");
 		assertEquals(0,cfBugs.getBugs().getBugList().size());
 	}
-	
+
+	@Ignore
 	@Test
 	public void testCFFeed_Read_UnVard() throws ParseException, IOException{
 		final String cfcSrc = "<cfcomponent>\r\n" +
