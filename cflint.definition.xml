@@ -1,0 +1,66 @@
+<?xml version="1.0"?>
+<CFLint-Plugin pluginid="com.cflint.core" website="http://github.com/cflint" name="Core Plugins" package="com.cflint.plugins.core"> 
+	<ruleImpl name="ArgDefChecker">
+		<message code="ARG_DEFAULT_MISSING"><!-- can be more than one -->
+			<severity>WARNING</severity>
+			<messageText>Argument ${variable} is not required and does not define a default value.</messageText>
+		</message>
+	</ruleImpl>
+	<ruleImpl name="ArgVarChecker">
+		<message code="ARG_VAR_CONFLICT">
+			<severity>WARNING</severity>
+			<messageText>Variable ${variable} should not be declared in both var and argument scopes.</messageText>
+		</message>
+		<message code="ARG_VAR_MIXED">
+			<severity>WARNING</severity>
+			<messageText>Variable ${variable} should not be referenced in local and argument scope.</messageText>
+		</message>
+	</ruleImpl>
+	<ruleImpl name="CFSwitchDefaultChecker">
+		<message code="NO_DEFAULT_INSIDE_SWITCH">
+			<severity>WARNING</severity>
+			<messageText>Not having a Default statement defined for a switch could pose potential issues.</messageText>
+		</message>
+	</ruleImpl>
+	<ruleImpl name="GlobalVarChecker">
+		<message code="GLOBAL_VAR">
+			<severity>WARNING</severity>
+			<messageText>Identifier ${variable} is global, referencing in a CFC or function should be avoided.</messageText>
+		</message>
+	</ruleImpl>
+	<ruleImpl name="NestedCFOutput">
+		<message code="NESTED_CFOUTPUT">
+			<severity>ERROR</severity>
+			<messageText>Nested CFOutput, outer CFOutput has @query.</messageText>
+		</message>
+	</ruleImpl>
+	<ruleImpl name="OutputParmMissing">
+		<message code="OUTPUT_ATTR">
+			<severity>INFO</severity>
+			<messageText>${variable} should have @output='false'.</messageText>
+		</message>
+	</ruleImpl>
+	<ruleImpl name="OutputParmMissing">
+		<message code="SETSQL_PARAM_REQ">
+			<severity>WARNING</severity>
+			<messageText>setSql() statement should use .addParam() instead of #'s for security.</messageText>
+		</message>
+		<message code="QUERYPARAM_REQ">
+			<severity>WARNING</severity>
+			<messageText>${variable} should use <cfqueryparam/> for security reasons.</messageText>
+		</message>
+	</ruleImpl>
+	<ruleImpl name="TypedQueryNew">
+		<message code="QUERYNEW_DATATYPE">
+			<severity>WARNING</severity>
+			<messageText>QueryNew statement should specify datatypes.</messageText>
+		</message>
+	</ruleImpl>
+	<ruleImpl name="VarScoper">
+		<message code="MISSING_VAR">
+			<severity>ERROR</severity>
+			<messageText>Variable ${variable} is not declared with a var statement.</messageText>
+		</message>
+	</ruleImpl>
+
+</CFLint-Plugin>

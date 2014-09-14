@@ -14,13 +14,6 @@ import static org.junit.Assert.*;
 
 public class TestCFUpdateTagChecker {
 
-	StackHandler handler = null;
-
-	@Before
-	public void setUp() {
-		handler = new StackHandler();
-	}
-
 	@Test
 	public void test_BAD() throws ParseException, IOException {
 		final String cfcSrc = "<CFUPDATE DATASOURCE=\"ds_name\"" +

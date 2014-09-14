@@ -97,19 +97,19 @@
 			background: #aaffaa;
 		}
 
-		.priority-1 {
+		.severity-1 {
 		    color: red;
 		    font-weight: bold;
 		}
-		.priority-2 {
+		.severity-2 {
 		    color: orange;
 		    font-weight: bold;
 		}
-		.priority-3 {
+		.severity-3 {
 		    color: green;
 		    font-weight: bold;
 		}
-		.priority-4 {
+		.severity-4 {
 		    color: blue;
 		    font-weight: bold;
 		}
@@ -243,7 +243,7 @@
 	<tr class="tablerow{position() mod 2}" onclick="toggleRow('{$warningId}');">
 
 	<td>
-	    <span><xsl:attribute name="class">priority-<xsl:value-of select="@priority"/></xsl:attribute>
+	    <span><xsl:attribute name="class">severity-<xsl:value-of select="@severity"/></xsl:attribute>
 	        <xsl:value-of select="@abbrev"/>
         </span>
 	</td>
@@ -302,12 +302,12 @@
 			<th align="right">Density*</th>
 		</tr>
 		<tr class="tablerow0">
-			<td>High Priority Warnings</td>
-			<td align="right"><xsl:value-of select="@priority_1"/></td>
+			<td>High Severity Warnings</td>
+			<td align="right"><xsl:value-of select="@severity_1"/></td>
 			<td align="right">
 			    <xsl:choose>
-                    <xsl:when test= "number($kloc) &gt; 0.0 and number(@priority_1) &gt; 0.0">
-        			    <xsl:value-of select="format-number(@priority_1 div $kloc, $format)"/>
+                    <xsl:when test= "number($kloc) &gt; 0.0 and number(@severity_1) &gt; 0.0">
+        			    <xsl:value-of select="format-number(@severity_1 div $kloc, $format)"/>
                     </xsl:when>
                     <xsl:otherwise>
         			    <xsl:value-of select="format-number(0.0, $format)"/>
@@ -316,12 +316,12 @@
 			</td>
 		</tr>
 		<tr class="tablerow1">
-			<td>Medium Priority Warnings</td>
-			<td align="right"><xsl:value-of select="@priority_2"/></td>
+			<td>Medium Severity Warnings</td>
+			<td align="right"><xsl:value-of select="@severity_2"/></td>
 			<td align="right">
 			    <xsl:choose>
-                    <xsl:when test= "number($kloc) &gt; 0.0 and number(@priority_2) &gt; 0.0">
-        			    <xsl:value-of select="format-number(@priority_2 div $kloc, $format)"/>
+                    <xsl:when test= "number($kloc) &gt; 0.0 and number(@severity_2) &gt; 0.0">
+        			    <xsl:value-of select="format-number(@severity_2 div $kloc, $format)"/>
                     </xsl:when>
                     <xsl:otherwise>
         			    <xsl:value-of select="format-number(0.0, $format)"/>
@@ -331,14 +331,14 @@
 		</tr>
 
     <xsl:choose>
-		<xsl:when test="@priority_3">
+		<xsl:when test="@severity_3">
 			<tr class="tablerow1">
-				<td>Low Priority Warnings</td>
-				<td align="right"><xsl:value-of select="@priority_3"/></td>
+				<td>Low Severity Warnings</td>
+				<td align="right"><xsl:value-of select="@severity_3"/></td>
 				<td align="right">
                     <xsl:choose>
-                        <xsl:when test= "number($kloc) &gt; 0.0 and number(@priority_3) &gt; 0.0">
-        			        <xsl:value-of select="format-number(@priority_3 div $kloc, $format)"/>
+                        <xsl:when test= "number($kloc) &gt; 0.0 and number(@severity_3) &gt; 0.0">
+        			        <xsl:value-of select="format-number(@severity_3 div $kloc, $format)"/>
                         </xsl:when>
                         <xsl:otherwise>
         		            <xsl:value-of select="format-number(0.0, $format)"/>

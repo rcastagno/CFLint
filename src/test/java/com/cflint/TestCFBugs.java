@@ -6,7 +6,6 @@ import java.util.Collection;
 import java.util.List;
 
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import com.cflint.BugInfo;
@@ -17,8 +16,12 @@ import com.cflint.plugins.core.NestedCFOutput;
 import com.cflint.plugins.core.TypedQueryNew;
 import com.cflint.plugins.core.VarScoper;
 
+import cfml.parsing.CFMLParser;
+import cfml.parsing.CFMLSource;
 import cfml.parsing.cfscript.ParseException;
+
 import static org.junit.Assert.*;
+import org.junit.Ignore;
 
 public class TestCFBugs {
 
@@ -31,25 +34,22 @@ public class TestCFBugs {
 	
 	@Test
 	public void testSimpleCFSET() throws ParseException, IOException{
-		if (CFLintDefaults.reportParseErrors) {
-			final String cfcSrc = "<cfcomponent>\r\n" +
-					"<cffunction name=\"test\">\r\n" +
-					"	<cfif 1 EQ 1>\r\n" +
-					"	<cfset x=123/>\r\n" +
-					"	<cfset var y=123/>\r\n" +
-					"	</cfif>\r\n" +
-					"</cffunction>\r\n" +
-					"</cfcomponent>";
-			CFLint cfBugs = new CFLint(new VarScoper());
-			cfBugs.process(cfcSrc,"test");
-			List<BugInfo> result = cfBugs.getBugs().getBugList().values().iterator().next();
-			assertEquals(1,result.size());
-			assertEquals("MISSING_VAR",result.get(0).getMessageCode());
-			assertEquals(4,result.get(0).getLine());
-		}
+		final String cfcSrc = "<cfcomponent>\r\n" +
+				"<cffunction name=\"test\">\r\n" +
+				"	<cfif 1 EQ 1>\r\n" +
+				"	<cfset x=123/>\r\n" +
+				"	<cfset var y=123/>\r\n" +
+				"	</cfif>\r\n" +
+				"</cffunction>\r\n" +
+				"</cfcomponent>";
+		CFLint cfBugs = new CFLint(new VarScoper());
+		cfBugs.process(cfcSrc,"test");
+		List<BugInfo> result = cfBugs.getBugs().getBugList().values().iterator().next();
+		assertEquals(1,result.size());
+		assertEquals("MISSING_VAR",result.get(0).getMessageCode());
+		assertEquals(4,result.get(0).getLine());
 	}
 	
-	@Ignore
 	@Test
 	public void testSimpleCFSET_FirstOffenseOnly() throws ParseException, IOException{
 		final String cfcSrc = "<cfcomponent>\r\n" +
@@ -109,7 +109,6 @@ public class TestCFBugs {
 		assertEquals(0,result.size());
 	}	
 
-	@Ignore
 	@Test
 	public void testSimpleCFSET_NoParse() throws ParseException, IOException{
 		final String cfcSrc = "<cfcomponent>\r\n" +

@@ -9,16 +9,15 @@ import com.cflint.BugInfo;
 import com.cflint.BugList;
 import com.cflint.plugins.CFLintScanner;
 import com.cflint.plugins.Context;
-import com.cflint.tools.CFSeverity;
-import com.cflint.tools.CFMLTag;
 
 @Extension
 public class CFInsertTagChecker implements CFLintScanner {
-	final String cfmlTagCheck = CFMLTag.CFINSERT.getValue();
-	final String severity = CFSeverity.WARNING.getValue();
+	final String cfmlTagCheck = "cfinsert";
+	final String severity = "WARNING";
 	final String messageCode = "AVOID_USING_" + cfmlTagCheck.toUpperCase() + "_TAG";
-	final String message = "There are refresh, performance, and maintenance issues with the <"
-						 + CFMLTag.CFINSERT.getValue().toUpperCase() + "> tag";
+	final String message = "There are refresh, performance, and maintenance issues with the <" + 
+							cfmlTagCheck +
+							">  tag";
 	
 	public void expression(final CFExpression expression, final Context context, final BugList bugs) {
 		

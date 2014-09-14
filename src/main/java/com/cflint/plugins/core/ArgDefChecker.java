@@ -42,7 +42,7 @@ public class ArgDefChecker implements CFLintScanner {
 	}
 
 	public void element(final Element element, final Context context, final BugList bugs) {
-		if (element.getName().equalsIgnoreCase("cfargument")) {
+		if (element.getName().equals("cfargument")) {
 			final String name = element.getAttributeValue("name");
 			final boolean required = CFTool.toBoolean(element.getAttributeValue("required"));
 			final String defaultExpr = element.getAttributeValue("default");

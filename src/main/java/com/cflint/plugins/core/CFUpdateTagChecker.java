@@ -9,15 +9,13 @@ import com.cflint.BugInfo;
 import com.cflint.BugList;
 import com.cflint.plugins.CFLintScanner;
 import com.cflint.plugins.Context;
-import com.cflint.tools.CFSeverity;
-import com.cflint.tools.CFMLTag;
-
 @Extension
 public class CFUpdateTagChecker implements CFLintScanner {
-	final String cfmlTagCheck = CFMLTag.CFUPDATE.getValue();
+	final String cfmlTagCheck = "cfupdate";
+	final String severity = "WARNING";
 	final String messageCode = "AVOID_USING_" + cfmlTagCheck.toUpperCase() + "_TAG";
 	final String message = "There are refresh, performance, and maintenance issues with the <"
-						 + CFMLTag.CFUPDATE.getValue().toUpperCase()+"> tag";
+						 + cfmlTagCheck +"> tag";
 	
 	public void expression(final CFExpression expression, final Context context, final BugList bugs) {
 		
@@ -33,7 +31,7 @@ public class CFUpdateTagChecker implements CFLintScanner {
 		if (tagName.equalsIgnoreCase(cfmlTagCheck)){
 			int begLine = element.getSource().getRow(element.getBegin());
 			bugs.add(new BugInfo.BugInfoBuilder().setLine(begLine).setMessageCode(messageCode)
-				.setSeverity(CFSeverity.WARNING.getValue()).setFilename(context.getFilename())
+				.setSeverity(severity).setFilename(context.getFilename())
 				.setMessage(message)
 				.build());
 		}

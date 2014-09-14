@@ -6,6 +6,7 @@ import java.util.regex.Pattern;
 import net.htmlparser.jericho.Element;
 import cfml.parsing.cfscript.CFBinaryExpression;
 import cfml.parsing.cfscript.CFExpression;
+import cfml.parsing.cfscript.CFFunctionExpression;
 import cfml.parsing.cfscript.CFJavaMethodExpression;
 import cfml.parsing.cfscript.cfFullVarExpression;
 import cfml.parsing.cfscript.script.CFScriptStatement;

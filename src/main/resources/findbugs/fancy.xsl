@@ -218,23 +218,23 @@
             background: #eeeeee;
             text-align:center;
          }
-         .summary-priority-all {
+         .summary-severity-all {
             background: #dddddd;
             text-align:center;
          }
-         .summary-priority-1 {
+         .summary-severity-1 {
             background: red;
             text-align:center;
          }
-         .summary-priority-2 {
+         .summary-severity-2 {
             background: orange;
             text-align:center;
          }
-         .summary-priority-3 {
+         .summary-severity-3 {
             background: green;
             text-align:center;
          }
-         .summary-priority-4 {
+         .summary-severity-4 {
             background: blue;
             text-align:center;
          }
@@ -407,11 +407,11 @@
             (<xsl:value-of select="/BugCollection/FindBugsSummary/@total_classes" /> classes)
          </td>
          <td class='summary-size'><xsl:value-of select="/BugCollection/FindBugsSummary/@total_size" /></td>
-         <td class='summary-priority-all'><xsl:value-of select="/BugCollection/FindBugsSummary/@total_bugs" /></td>
-         <td class='summary-priority-1'><xsl:value-of select="/BugCollection/FindBugsSummary/@priority_1" /></td>
-         <td class='summary-priority-2'><xsl:value-of select="/BugCollection/FindBugsSummary/@priority_2" /></td>
-         <td class='summary-priority-3'><xsl:value-of select="/BugCollection/FindBugsSummary/@priority_3" /></td>
-         <td class='summary-priority-4'><xsl:value-of select="/BugCollection/FindBugsSummary/@priority_4" /></td>
+         <td class='summary-severity-all'><xsl:value-of select="/BugCollection/FindBugsSummary/@total_bugs" /></td>
+         <td class='summary-severity-1'><xsl:value-of select="/BugCollection/FindBugsSummary/@severity_1" /></td>
+         <td class='summary-severity-2'><xsl:value-of select="/BugCollection/FindBugsSummary/@severity_2" /></td>
+         <td class='summary-severity-3'><xsl:value-of select="/BugCollection/FindBugsSummary/@severity_3" /></td>
+         <td class='summary-severity-4'><xsl:value-of select="/BugCollection/FindBugsSummary/@severity_4" /></td>
          <td class='summary-ratio'></td>
       </tr>
       <xsl:for-each select="/BugCollection/FindBugsSummary/PackageStats">
@@ -420,11 +420,11 @@
             <tr>
                <td class='summary-name'><xsl:value-of select="@package" /></td>
                <td class='summary-size'><xsl:value-of select="@total_size" /></td>
-               <td class='summary-priority-all'><xsl:value-of select="@total_bugs" /></td>
-               <td class='summary-priority-1'><xsl:value-of select="@priority_1" /></td>
-               <td class='summary-priority-2'><xsl:value-of select="@priority_2" /></td>
-               <td class='summary-priority-3'><xsl:value-of select="@priority_3" /></td>
-               <td class='summary-priority-4'><xsl:value-of select="@priority_4" /></td>
+               <td class='summary-severity-all'><xsl:value-of select="@total_bugs" /></td>
+               <td class='summary-severity-1'><xsl:value-of select="@severity_1" /></td>
+               <td class='summary-severity-2'><xsl:value-of select="@severity_2" /></td>
+               <td class='summary-severity-3'><xsl:value-of select="@severity_3" /></td>
+               <td class='summary-severity-4'><xsl:value-of select="@severity_4" /></td>
                <td class='summary-ratio'></td>
 <!--
                <xsl:for-each select="ClassStats">
@@ -519,7 +519,7 @@
          <xsl:attribute name="href"></xsl:attribute>
          <xsl:attribute name="onclick">showbug('b-uid-<xsl:value-of select="@instanceHash" />-<xsl:value-of select="@instanceOccurrenceNum" />','<xsl:value-of select="$which-list" />');return false;</xsl:attribute>
          <span>
-            <xsl:attribute name="class">b-<xsl:value-of select="@priority"/></xsl:attribute>
+            <xsl:attribute name="class">b-<xsl:value-of select="@severity"/></xsl:attribute>
             <xsl:text disable-output-escaping="yes">&amp;nbsp;&amp;nbsp;</xsl:text>
          </span>
          <span class="b-t"><xsl:value-of select="@abbrev" />: </span> <xsl:value-of select="Class/Message" />
@@ -551,13 +551,13 @@
    <xsl:variable name="category-count"
                        select="count(/BugCollection/BugInstance[@category=$category and not(@last)])" />
    <xsl:variable name="category-count-p1"
-                       select="count(/BugCollection/BugInstance[@category=$category and @priority='1' and not(@last)])" />
+                       select="count(/BugCollection/BugInstance[@category=$category and @severity='1' and not(@last)])" />
    <xsl:variable name="category-count-p2"
-                       select="count(/BugCollection/BugInstance[@category=$category and @priority='2' and not(@last)])" />
+                       select="count(/BugCollection/BugInstance[@category=$category and @severity='2' and not(@last)])" />
    <xsl:variable name="category-count-p3"
-                       select="count(/BugCollection/BugInstance[@category=$category and @priority='3' and not(@last)])" />
+                       select="count(/BugCollection/BugInstance[@category=$category and @severity='3' and not(@last)])" />
    <xsl:variable name="category-count-p4"
-                       select="count(/BugCollection/BugInstance[@category=$category and @priority='4' and not(@last)])" />
+                       select="count(/BugCollection/BugInstance[@category=$category and @severity='4' and not(@last)])" />
    <div class='ob'>
       <div class='ob-t'>
          <a>
@@ -595,13 +595,13 @@
    <xsl:variable name="code-count"
                        select="count(/BugCollection/BugInstance[@category=$category and @abbrev=$code and not(@last)])" />
    <xsl:variable name="code-count-p1"
-                       select="count(/BugCollection/BugInstance[@category=$category and @abbrev=$code and @priority='1' and not(@last)])" />
+                       select="count(/BugCollection/BugInstance[@category=$category and @abbrev=$code and @severity='1' and not(@last)])" />
    <xsl:variable name="code-count-p2"
-                       select="count(/BugCollection/BugInstance[@category=$category and @abbrev=$code and @priority='2' and not(@last)])" />
+                       select="count(/BugCollection/BugInstance[@category=$category and @abbrev=$code and @severity='2' and not(@last)])" />
    <xsl:variable name="code-count-p3"
-                       select="count(/BugCollection/BugInstance[@category=$category and @abbrev=$code and @priority='3' and not(@last)])" />
+                       select="count(/BugCollection/BugInstance[@category=$category and @abbrev=$code and @severity='3' and not(@last)])" />
    <xsl:variable name="code-count-p4"
-                       select="count(/BugCollection/BugInstance[@category=$category and @abbrev=$code and @priority='4' and not(@last)])" />
+                       select="count(/BugCollection/BugInstance[@category=$category and @abbrev=$code and @severity='4' and not(@last)])" />
    <div class='ib-1'>
       <div class="ib-1-t">
          <a>
@@ -643,13 +643,13 @@
    <xsl:variable name="bug-count"
                        select="count(/BugCollection/BugInstance[@category=$category and @abbrev=$code and @type=$bug and not(@last)])" />
    <xsl:variable name="bug-count-p1"
-                       select="count(/BugCollection/BugInstance[@category=$category and @abbrev=$code and @type=$bug and @priority='1' and not(@last)])" />
+                       select="count(/BugCollection/BugInstance[@category=$category and @abbrev=$code and @type=$bug and @severity='1' and not(@last)])" />
    <xsl:variable name="bug-count-p2"
-                       select="count(/BugCollection/BugInstance[@category=$category and @abbrev=$code and @type=$bug and @priority='2' and not(@last)])" />
+                       select="count(/BugCollection/BugInstance[@category=$category and @abbrev=$code and @type=$bug and @severity='2' and not(@last)])" />
    <xsl:variable name="bug-count-p3"
-                       select="count(/BugCollection/BugInstance[@category=$category and @abbrev=$code and @type=$bug and @priority='3' and not(@last)])" />
+                       select="count(/BugCollection/BugInstance[@category=$category and @abbrev=$code and @type=$bug and @severity='3' and not(@last)])" />
    <xsl:variable name="bug-count-p4"
-                       select="count(/BugCollection/BugInstance[@category=$category and @abbrev=$code and @type=$bug and @priority='4' and not(@last)])" />
+                       select="count(/BugCollection/BugInstance[@category=$category and @abbrev=$code and @type=$bug and @severity='4' and not(@last)])" />
    <div class='ib-2'>
       <div class='ib-2-t'>
          <a>
@@ -694,27 +694,27 @@
 <xsl:template name="packages" >
    <xsl:param name="package" select="''" />
    <xsl:variable name="package-count-p1">
-      <xsl:if test="not(/BugCollection/FindBugsSummary/PackageStats[@package=$package]/@priority_1 != '')">0</xsl:if>
-      <xsl:if test="/BugCollection/FindBugsSummary/PackageStats[@package=$package]/@priority_1 != ''">
-         <xsl:value-of select="/BugCollection/FindBugsSummary/PackageStats[@package=$package]/@priority_1" />
+      <xsl:if test="not(/BugCollection/FindBugsSummary/PackageStats[@package=$package]/@severity_1 != '')">0</xsl:if>
+      <xsl:if test="/BugCollection/FindBugsSummary/PackageStats[@package=$package]/@severity_1 != ''">
+         <xsl:value-of select="/BugCollection/FindBugsSummary/PackageStats[@package=$package]/@severity_1" />
       </xsl:if>
    </xsl:variable>
    <xsl:variable name="package-count-p2">
-      <xsl:if test="not(/BugCollection/FindBugsSummary/PackageStats[@package=$package]/@priority_2 != '')">0</xsl:if>
-      <xsl:if test="/BugCollection/FindBugsSummary/PackageStats[@package=$package]/@priority_2 != ''">
-         <xsl:value-of select="/BugCollection/FindBugsSummary/PackageStats[@package=$package]/@priority_2" />
+      <xsl:if test="not(/BugCollection/FindBugsSummary/PackageStats[@package=$package]/@severity_2 != '')">0</xsl:if>
+      <xsl:if test="/BugCollection/FindBugsSummary/PackageStats[@package=$package]/@severity_2 != ''">
+         <xsl:value-of select="/BugCollection/FindBugsSummary/PackageStats[@package=$package]/@severity_2" />
       </xsl:if>
    </xsl:variable>
    <xsl:variable name="package-count-p3">
-      <xsl:if test="not(/BugCollection/FindBugsSummary/PackageStats[@package=$package]/@priority_3 != '')">0</xsl:if>
-      <xsl:if test="/BugCollection/FindBugsSummary/PackageStats[@package=$package]/@priority_3 != ''">
-         <xsl:value-of select="/BugCollection/FindBugsSummary/PackageStats[@package=$package]/@priority_3" />
+      <xsl:if test="not(/BugCollection/FindBugsSummary/PackageStats[@package=$package]/@severity_3 != '')">0</xsl:if>
+      <xsl:if test="/BugCollection/FindBugsSummary/PackageStats[@package=$package]/@severity_3 != ''">
+         <xsl:value-of select="/BugCollection/FindBugsSummary/PackageStats[@package=$package]/@severity_3" />
       </xsl:if>
    </xsl:variable>
    <xsl:variable name="package-count-p4">
-      <xsl:if test="not(/BugCollection/FindBugsSummary/PackageStats[@package=$package]/@priority_4 != '')">0</xsl:if>
-      <xsl:if test="/BugCollection/FindBugsSummary/PackageStats[@package=$package]/@priority_4 != ''">
-         <xsl:value-of select="/BugCollection/FindBugsSummary/PackageStats[@package=$package]/@priority_4" />
+      <xsl:if test="not(/BugCollection/FindBugsSummary/PackageStats[@package=$package]/@severity_4 != '')">0</xsl:if>
+      <xsl:if test="/BugCollection/FindBugsSummary/PackageStats[@package=$package]/@severity_4 != ''">
+         <xsl:value-of select="/BugCollection/FindBugsSummary/PackageStats[@package=$package]/@severity_4" />
       </xsl:if>
    </xsl:variable>
 
@@ -755,27 +755,27 @@
                        select="/BugCollection/FindBugsSummary/PackageStats[@package=$package]/ClassStats[@class=$class and @bugs != '0']/@bugs" />
 
    <xsl:variable name="class-count-p1">
-      <xsl:if test="not(/BugCollection/FindBugsSummary/PackageStats[@package=$package]/ClassStats[@class=$class and @bugs != '0']/@priority_1 != '')">0</xsl:if>
-      <xsl:if test="/BugCollection/FindBugsSummary/PackageStats[@package=$package]/ClassStats[@class=$class and @bugs != '0']/@priority_1 != ''">
-         <xsl:value-of select="/BugCollection/FindBugsSummary/PackageStats[@package=$package]/ClassStats[@class=$class and @bugs != '0']/@priority_1" />
+      <xsl:if test="not(/BugCollection/FindBugsSummary/PackageStats[@package=$package]/ClassStats[@class=$class and @bugs != '0']/@severity_1 != '')">0</xsl:if>
+      <xsl:if test="/BugCollection/FindBugsSummary/PackageStats[@package=$package]/ClassStats[@class=$class and @bugs != '0']/@severity_1 != ''">
+         <xsl:value-of select="/BugCollection/FindBugsSummary/PackageStats[@package=$package]/ClassStats[@class=$class and @bugs != '0']/@severity_1" />
       </xsl:if>
    </xsl:variable>
    <xsl:variable name="class-count-p2">
-      <xsl:if test="not(/BugCollection/FindBugsSummary/PackageStats[@package=$package]/ClassStats[@class=$class and @bugs != '0']/@priority_2 != '')">0</xsl:if>
-      <xsl:if test="/BugCollection/FindBugsSummary/PackageStats[@package=$package]/ClassStats[@class=$class and @bugs != '0']/@priority_2 != ''">
-         <xsl:value-of select="/BugCollection/FindBugsSummary/PackageStats[@package=$package]/ClassStats[@class=$class and @bugs != '0']/@priority_2" />
+      <xsl:if test="not(/BugCollection/FindBugsSummary/PackageStats[@package=$package]/ClassStats[@class=$class and @bugs != '0']/@severity_2 != '')">0</xsl:if>
+      <xsl:if test="/BugCollection/FindBugsSummary/PackageStats[@package=$package]/ClassStats[@class=$class and @bugs != '0']/@severity_2 != ''">
+         <xsl:value-of select="/BugCollection/FindBugsSummary/PackageStats[@package=$package]/ClassStats[@class=$class and @bugs != '0']/@severity_2" />
       </xsl:if>
    </xsl:variable>
    <xsl:variable name="class-count-p3">
-      <xsl:if test="not(/BugCollection/FindBugsSummary/PackageStats[@package=$package]/ClassStats[@class=$class and @bugs != '0']/@priority_3 != '')">0</xsl:if>
-      <xsl:if test="/BugCollection/FindBugsSummary/PackageStats[@package=$package]/ClassStats[@class=$class and @bugs != '0']/@priority_3 != ''">
-         <xsl:value-of select="/BugCollection/FindBugsSummary/PackageStats[@package=$package]/ClassStats[@class=$class and @bugs != '0']/@priority_3" />
+      <xsl:if test="not(/BugCollection/FindBugsSummary/PackageStats[@package=$package]/ClassStats[@class=$class and @bugs != '0']/@severity_3 != '')">0</xsl:if>
+      <xsl:if test="/BugCollection/FindBugsSummary/PackageStats[@package=$package]/ClassStats[@class=$class and @bugs != '0']/@severity_3 != ''">
+         <xsl:value-of select="/BugCollection/FindBugsSummary/PackageStats[@package=$package]/ClassStats[@class=$class and @bugs != '0']/@severity_3" />
       </xsl:if>
    </xsl:variable>
    <xsl:variable name="class-count-p4">
-      <xsl:if test="not(/BugCollection/FindBugsSummary/PackageStats[@package=$package]/ClassStats[@class=$class and @bugs != '0']/@priority_4 != '')">0</xsl:if>
-      <xsl:if test="/BugCollection/FindBugsSummary/PackageStats[@package=$package]/ClassStats[@class=$class and @bugs != '0']/@priority_4 != ''">
-         <xsl:value-of select="/BugCollection/FindBugsSummary/PackageStats[@package=$package]/ClassStats[@class=$class and @bugs != '0']/@priority_4" />
+      <xsl:if test="not(/BugCollection/FindBugsSummary/PackageStats[@package=$package]/ClassStats[@class=$class and @bugs != '0']/@severity_4 != '')">0</xsl:if>
+      <xsl:if test="/BugCollection/FindBugsSummary/PackageStats[@package=$package]/ClassStats[@class=$class and @bugs != '0']/@severity_4 != ''">
+         <xsl:value-of select="/BugCollection/FindBugsSummary/PackageStats[@package=$package]/ClassStats[@class=$class and @bugs != '0']/@severity_4" />
       </xsl:if>
    </xsl:variable>
 

@@ -1,0 +1,42 @@
+!--
+	To use config file, pass the argument to CFLint (e.g. "CFLint -configFile='C:\CFLint\config.xml'")
+	Command line settings take precendence over config file
+-->
+
+<config>
+	<output path=".">
+		<!--
+			<output/> tag is optional, assumes default output just like the normal command line parms.
+
+			@path: path where files should be generated.
+			xml: xml output should be generated (used by CFLint-plugin).
+				all attributes optional, tag is optional
+			html: html output should be generated.
+				all attributes optional, tag is optional
+			text: text output should be generated.
+				all attributes optional, tag is optional
+		-->
+		<xml style="cflint" file="cflint-results.xml"/>
+		<html style="plain" file="cflint-results.html"/>
+		<text file="cflint-results.txt"/>
+	</output>
+	<!-- alters the configuration of a rule -->
+	<rules>
+		<ruleImpl name="ArgVarChecker">
+			<message code="ARG_VAR_CONFLICTED">
+				<severity>Major</severity>
+				<messageText>Variables should not be declared in both var and argument scopes.</messageText>
+			</message>
+		</ruleImpl>
+		<ruleImpl name="FunctionLengthChecker">
+			<message code="FUNCTION_LENGTH_EXCEEDED">
+				<severity>WARNING</severity>
+				<messageText>Functions over 50 lines of code make it difficult to understand and debug. Consider separating the function into separate functions or (recommended) classes.</messageText>
+			</message>
+			<parameter @name="length">50</parameter>
+		</ruleImpl>
+	</rules>
+	<exclude>
+		<messageCode>ARG_VAR_CONFLICT</messageCode>
+	</exclude>
+</config>

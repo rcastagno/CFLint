@@ -9,13 +9,11 @@ import com.cflint.BugInfo;
 import com.cflint.BugList;
 import com.cflint.plugins.CFLintScanner;
 import com.cflint.plugins.Context;
-import com.cflint.tools.CFSeverity;
-import com.cflint.tools.CFMLTag;
 
 @Extension
 public class CFModuleTagChecker implements CFLintScanner {
-	final String cfmlTagCheck = CFMLTag.CFMODULE.getValue();
-	final String severity = CFSeverity.WARNING.getValue();
+	final String cfmlTagCheck = "cfmodule";
+	final String severity = "WARNING";
 	final String messageCode = "AVOID_USING_" + cfmlTagCheck.toUpperCase() + "_TAG";
 	final String message = "There are performance issues with the <" + 
 							cfmlTagCheck +
@@ -32,7 +30,7 @@ public class CFModuleTagChecker implements CFLintScanner {
 	//rule: do not use cfmodule tag 
 	public void element(final Element element, final Context context, final BugList bugs) {
 		String tagName = element.getName();
-		if (tagName.equalsIgnoreCase(CFMLTag.CFMODULE.getValue())){
+		if (tagName.equalsIgnoreCase(cfmlTagCheck)){
 			int begLine = element.getSource().getRow(element.getBegin());
 			bugs.add(new BugInfo.BugInfoBuilder().setLine(begLine).setMessageCode(messageCode)
 				.setSeverity(severity).setFilename(context.getFilename())

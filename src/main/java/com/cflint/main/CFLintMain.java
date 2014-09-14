@@ -23,17 +23,19 @@ import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
 import org.apache.commons.cli.GnuParser;
 import org.apache.commons.cli.HelpFormatter;
+import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
-
-import cflint.com.CFLintOptions;
+import org.apache.log4j.Logger;
+import org.apache.log4j.PropertyConfigurator;
+import org.apache.log4j.xml.DOMConfigurator;
 
 import com.cflint.CFLint;
-import com.cflint.CFLintDefaults;
 import com.cflint.HTMLOutput;
 import com.cflint.TextOutput;
 import com.cflint.Version;
 import com.cflint.XMLOutput;
+import com.cflint.plugins.exceptions.DefaultCFLintExceptionListener;
 import com.cflint.tools.CFLintFilter;
 
 public class CFLintMain {
@@ -42,18 +44,60 @@ public class CFLintMain {
 	List<String> excludeRule = new ArrayList<String>();
 	List<String> folder = new ArrayList<String>();
 	String filterFile = null;
+	boolean verbose = false;
+	boolean quiet = false;
+	boolean xmlOutput = false;
+	boolean htmlOutput = true;
+	boolean textOutput = false;
+	String xmlOutFile = "cflint-result.xml";
+	String xmlstyle = "cflint";
+	String htmlOutFile = "cflint-result.html";
+	String htmlStyle = "plain.xsl";
 	String textOutFile = null;
 	String[] includeCodes = null;
 	String[] excludeCodes = null;
 	private String extensions;
+	boolean showprogress= false;
+	boolean progressUsesThread=true;
 
 	public static void main(final String[] args) throws ParseException, IOException, TransformerException {
+		//PropertyConfigurator.configure("/log4j.properties");
+		//DOMConfigurator.configure(CFLintFilter.class.getResource("/log4j.xml").getFile());
+		//Logger.getLogger("net.htmlparser.jericho");
+		
+		final Options options = new Options();
+		// add t option
+		options.addOption("includeRule", true, "specify rules to include");
+		options.addOption("excludeRule", true, "specify rules to exclude");
+		options.addOption("folder", true, "folder(s) to scan");
+		options.addOption("file", true, "file(s) to scan");
+		options.addOption("filterFile", true, "filter file");
+		options.addOption("v", false, "verbose");
+		options.addOption("version", false, "show the version number");
+		options.addOption("ui", false, "show UI");
+		options.addOption("verbose", false, "verbose");
+		options.addOption("showprogress", false, "show progress bar");
+		options.addOption("singlethread", false, "show progress bar");
+		
+		options.addOption("q", false, "quiet");
+		options.addOption("quiet", false, "quiet");
+		options.addOption("h", false, "display this help");
+		options.addOption("help", false, "display this help");
+		options.addOption("xml", false, "output in xml format");
+		options.addOption("xmlfile", true, "specify the output xml file (default: cflint-results.xml)");
+		options.addOption("xmlstyle", true, "cflint,findbugs");
+		options.addOption("html", false, "output in html format (default)");
+		options.addOption("htmlfile", true, "specify the output html file (default: cflint-results.html)");
+		options.addOption("htmlstyle", true, "default,plain");// fancy,fancy-hist,summary
+		options.addOption("text", false, "output in plain text");
+		options.addOption("textfile", true, "specify the output text file (default: cflint-results.txt)");
+		options.addOption("extensions", true, "specify the extensions of the CF source files (default: .cfm,.cfc)");
 
 		final CommandLineParser parser = new GnuParser();
-		final CommandLine cmd = parser.parse(CFLintOptions.options, args);
+		final CommandLine cmd = parser.parse(options, args);
 		if (cmd.hasOption('h') || cmd.hasOption("help")) {
 			final HelpFormatter formatter = new HelpFormatter();
-			formatter.printHelp("cflint", CFLintOptions.options);
+			formatter.printHelp("cflint", options);
 			return;
 		}
 		if(cmd.hasOption("version")){
@@ -61,16 +105,16 @@ public class CFLintMain {
 			return;
 		}
 		final CFLintMain main = new CFLintMain();
-		CFLintDefaults.verbose = (cmd.hasOption('v') || cmd.hasOption("verbose"));
-		CFLintDefaults.quiet = (cmd.hasOption('q') || cmd.hasOption("quiet"));
-		CFLintDefaults.xmlOutput = cmd.hasOption("xml") || cmd.hasOption("xmlstyle") || cmd.hasOption("xmlfile");
-		CFLintDefaults.textOutput = cmd.hasOption("text") || cmd.hasOption("textfile");
+		main.verbose = (cmd.hasOption('v') || cmd.hasOption("verbose"));
+		main.quiet = (cmd.hasOption('q') || cmd.hasOption("quiet"));
+		main.xmlOutput = cmd.hasOption("xml") || cmd.hasOption("xmlstyle") || cmd.hasOption("xmlfile");
+		main.textOutput = cmd.hasOption("text") || cmd.hasOption("textfile");
 		if (cmd.hasOption("ui")) {
 			main.ui();
 		}
 		// If an output is specified, htmlOutput is not defaulted to true.
-		if (CFLintDefaults.xmlOutput || CFLintDefaults.textOutput) {
-			CFLintDefaults.htmlOutput = cmd.hasOption("html") || cmd.hasOption("htmlstyle") || cmd.hasOption("htmlfile");
+		if (main.xmlOutput || main.textOutput) {
+			main.htmlOutput = cmd.hasOption("html") || cmd.hasOption("htmlstyle") || cmd.hasOption("htmlfile");
 		}
 
 		if (cmd.hasOption("folder")) {
@@ -80,22 +124,22 @@ public class CFLintMain {
 			main.folder.addAll(Arrays.asList(cmd.getOptionValue("file").split(",")));
 		}
 		if (cmd.hasOption("htmlstyle")) {
-			CFLintDefaults.htmlStyle = cmd.getOptionValue("htmlstyle");
-			if (!CFLintDefaults.htmlStyle.endsWith(".xsl") && !CFLintDefaults.htmlStyle.endsWith(".xslt")) {
-				CFLintDefaults.htmlStyle = CFLintDefaults.htmlStyle + ".xsl";
+			main.htmlStyle = cmd.getOptionValue("htmlstyle");
+			if (!main.htmlStyle.endsWith(".xsl") && !main.htmlStyle.endsWith(".xslt")) {
+				main.htmlStyle = main.htmlStyle + ".xsl";
 			}
 		}
 		if (cmd.hasOption("xmlstyle")) {
-			CFLintDefaults.xmlstyle = cmd.getOptionValue("xmlstyle");
+			main.xmlstyle = cmd.getOptionValue("xmlstyle");
 		}
 		if (cmd.hasOption("filterFile")) {
 			main.filterFile = cmd.getOptionValue("filterFile");
 		}
 		if (cmd.hasOption("xmlfile")) {
-			CFLintDefaults.xmlOutFile = cmd.getOptionValue("xmlfile");
+			main.xmlOutFile = cmd.getOptionValue("xmlfile");
 		}
 		if (cmd.hasOption("htmlfile")) {
-			CFLintDefaults.htmlOutFile = cmd.getOptionValue("htmlfile");
+			main.htmlOutFile = cmd.getOptionValue("htmlfile");
 		}
 		if (cmd.hasOption("textfile")) {
 			main.textOutFile = cmd.getOptionValue("textfile");
@@ -110,8 +154,8 @@ public class CFLintMain {
 		if (cmd.hasOption("excludeRule")) {
 			main.excludeRule = Arrays.asList(cmd.getOptionValue("excludeRule").split(","));
 		}
-		CFLintDefaults.showprogress=cmd.hasOption("showprogress") || (!cmd.hasOption("showprogress") && cmd.hasOption("ui"));
-		CFLintDefaults.progressUsesThread=!cmd.hasOption("singlethread");
+		main.showprogress=cmd.hasOption("showprogress") || (!cmd.hasOption("showprogress") && cmd.hasOption("ui"));
+		main.progressUsesThread=!cmd.hasOption("singlethread");
 //		for (final Option option : cmd.getOptions()) {
 //			if(main.verbose){
 //				System.out.println("Option " + option.getOpt() + " => " + option.getValue());
@@ -124,21 +168,21 @@ public class CFLintMain {
 			}
 		} else {
 			final HelpFormatter formatter = new HelpFormatter();
-			formatter.printHelp("cflint", CFLintOptions.options);
+			formatter.printHelp("cflint", options);
 		}
 	}
 
 	private void open() throws IOException {
-		if (CFLintDefaults.xmlOutput) {
-			Desktop.getDesktop().open(new File(CFLintDefaults.xmlOutFile));
+		if (xmlOutput) {
+			Desktop.getDesktop().open(new File(xmlOutFile));
 			return;
 		}
-		if (CFLintDefaults.textOutput && textOutFile != null) {
+		if (textOutput && textOutFile != null) {
 			Desktop.getDesktop().open(new File(textOutFile));
 			return;
 		}
-		if (CFLintDefaults.htmlOutput) {
-			Desktop.getDesktop().open(new File(CFLintDefaults.htmlOutFile));
+		if (htmlOutput) {
+			Desktop.getDesktop().open(new File(htmlOutFile));
 			return;
 		}
 	}
@@ -162,23 +206,23 @@ public class CFLintMain {
 		// If selected set htmlOutput to false
 		for (final int indx : indxs) {
 			if (indx == 0) {
-				CFLintDefaults.xmlOutput = true;
+				xmlOutput = true;
 			}
 			if (indx == 1) {
-				CFLintDefaults.htmlOutput = true;
+				htmlOutput = true;
 			}
 			if (indx == 2) {
-				CFLintDefaults.textOutput = true;
+				textOutput = true;
 			}
 		}
 	}
 
 	private void execute() throws IOException, TransformerException {
 		final CFLint cflint = new CFLint();
-		cflint.setVerbose(CFLintDefaults.verbose);
-		cflint.setQuiet(CFLintDefaults.quiet);
-		cflint.setShowProgress(CFLintDefaults.showprogress);
-		cflint.setProgressUsesThread(CFLintDefaults.progressUsesThread);
+		cflint.setVerbose(verbose);
+		cflint.setQuiet(quiet);
+		cflint.setShowProgress(showprogress);
+		cflint.setProgressUsesThread(progressUsesThread);
 		if(extensions != null && extensions.trim().length() > 0){
 			try{
 				cflint.setAllowedExtensions(Arrays.asList(extensions.trim().split(",")));
@@ -210,25 +254,25 @@ public class CFLintMain {
 			// System.out.println(bi);
 			// }
 		}
-		if (CFLintDefaults.xmlOutput) {
-			if(CFLintDefaults.verbose){
-				System.out.println("Style:" + CFLintDefaults.xmlstyle);
+		if (xmlOutput) {
+			if(verbose){
+				System.out.println("Style:" + xmlstyle);
 			}
-			if ("findbugs".equalsIgnoreCase(CFLintDefaults.xmlstyle)) {
-				if(CFLintDefaults.verbose){
-					System.out.println("Writing findbugs style to " + CFLintDefaults.xmlOutFile);
+			if ("findbugs".equalsIgnoreCase(xmlstyle)) {
+				if(verbose){
+					System.out.println("Writing findbugs style to " + xmlOutFile);
 				}
-				new XMLOutput().outputFindBugs(cflint.getBugs(), new FileWriter(CFLintDefaults.xmlOutFile));
+				new XMLOutput().outputFindBugs(cflint.getBugs(), new FileWriter(xmlOutFile));
 			} else {
-				if(CFLintDefaults.verbose){
-					System.out.println("Writing " + CFLintDefaults.xmlOutFile);
+				if(verbose){
+					System.out.println("Writing " + xmlOutFile);
 				}
-				new XMLOutput().output(cflint.getBugs(), new FileWriter(CFLintDefaults.xmlOutFile));
+				new XMLOutput().output(cflint.getBugs(), new FileWriter(xmlOutFile));
 			}
 		}
-		if (CFLintDefaults.textOutput) {
+		if (textOutput) {
 			if(textOutFile != null){
-				if(CFLintDefaults.verbose){
+				if(verbose){
 					System.out.println("Writing " + textOutFile);
 				}
 			}
@@ -236,12 +280,12 @@ public class CFLintMain {
 			new TextOutput().output(cflint.getBugs(), textwriter);
 			
 		}
-		if (CFLintDefaults.htmlOutput) {
+		if (htmlOutput) {
 			try {
-				if(CFLintDefaults.verbose){
-					System.out.println("Writing " + CFLintDefaults.htmlOutFile);
+				if(verbose){
+					System.out.println("Writing " + htmlOutFile);
 				}
-				new HTMLOutput(CFLintDefaults.htmlStyle).output(cflint.getBugs(), new FileWriter(CFLintDefaults.htmlOutFile));
+				new HTMLOutput(htmlStyle).output(cflint.getBugs(), new FileWriter(htmlOutFile));
 			} catch (final TransformerException e) {
 				throw new IOException(e);
 			}

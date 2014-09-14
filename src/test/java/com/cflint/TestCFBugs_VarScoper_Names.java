@@ -13,7 +13,6 @@ import java.util.Collection;
 import java.util.List;
 
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
@@ -28,13 +27,11 @@ public class TestCFBugs_VarScoper_Names {
 	StackHandler handler = null;
 	final String tagName;
 
-	@Ignore
 	@Before
 	public void setUp() {
 		handler = new StackHandler();
 	}
 
-	@Ignore
 	@Parameterized.Parameters(name = "{0}")
 	public static Collection primeNumbers() {
 		return Arrays.asList(new String[][] { new String[] { "CFStoredProc" }, new String[] { "CFQuery" },
@@ -51,27 +48,23 @@ public class TestCFBugs_VarScoper_Names {
 		// "CFZip", "CFLdap" });
 	}
 
-	@Ignore
 	public TestCFBugs_VarScoper_Names(final String tagName) {
 		super();
 		this.tagName = tagName;
 	}
 
-	@Ignore
 	@Test
 	public void testScope_Name() throws ParseException, IOException {
 		runTagAttrTest(tagName.toLowerCase(), "name", "xx");
 		runTagAttrTest(tagName, "Name", "xx");
 	}
 
-	@Ignore
 	@Test
 	public void testScope_Name_Vard() throws ParseException, IOException {
 		runTagAttrTestVard(tagName.toLowerCase(), "name", "xx");
 		runTagAttrTestVard(tagName, "Name", "xx");
 	}
 
-	@Ignore
 	public void runTagAttrTest(final String tag, final String attr, final String variable) throws ParseException,
 			IOException {
 		final String cfcSrc = "<cfcomponent>\r\n" + "<cffunction name=\"test\">\r\n" + "   <" + tag + " " + attr
@@ -86,7 +79,6 @@ public class TestCFBugs_VarScoper_Names {
 		assertEquals(3, result.get(0).getLine());
 	}
 
-	@Ignore
 	public void runTagAttrTestVard(final String tag, final String attr, final String variable) throws ParseException,
 			IOException {
 		final String cfcSrc = "<cfcomponent>\r\n" + 

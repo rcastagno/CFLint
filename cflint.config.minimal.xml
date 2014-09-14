@@ -1,0 +1,12 @@
+!--
+	Minimal config that outputs an xml file, and only includes MISSING_VAR messages
+-->
+
+<config>
+	<output path=".">
+		<xml style="cflint" file="cflint-results.xml"/>
+	</output>
+	<include>
+		<messageCode>MISSING_VAR</messageCode>
+	</include>
+</config>

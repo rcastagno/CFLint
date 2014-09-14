@@ -12,8 +12,6 @@ import com.cflint.plugins.Context;
 
 @Extension
 public class OutputParmMissing implements CFLintScanner {
-	
-	// A Railo server automatically sets this to false. If using a Railo server, do not use this.
 
 	public void expression(final CFExpression expression, final Context context, final BugList bugs) {
 	}

@@ -1,9 +1,11 @@
 package com.cflint;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.Collection;
 import java.util.List;
 
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import com.cflint.BugInfo;
@@ -11,20 +13,21 @@ import com.cflint.CFLint;
 import com.cflint.StackHandler;
 import com.cflint.plugins.core.ArgVarChecker;
 
+import cfml.parsing.CFMLParser;
+import cfml.parsing.CFMLSource;
 import cfml.parsing.cfscript.ParseException;
+
 import static org.junit.Assert.*;
 
 public class TestCFBugs_ArgsUse {
 
 	StackHandler handler = null;
-
-	@Ignore
+	
 	@Before
 	public void setUp(){
 		handler = new StackHandler();
 	}
-
-	@Ignore
+	
 	@Test
 	public void testVarAndArgs() throws ParseException, IOException{
 		final String cfcSrc = "<cfcomponent>\r\n" +
@@ -40,8 +43,7 @@ public class TestCFBugs_ArgsUse {
 		assertEquals("ARG_VAR_CONFLICT",result.get(0).getMessageCode());
 		assertEquals(4,result.get(0).getLine());
 	}
-
-	@Ignore
+	
 	@Test
 	public void testVarAndArgs_Cfscript() throws ParseException, IOException{
 		final String cfcSrc="component { \r\n" + 
@@ -57,7 +59,6 @@ public class TestCFBugs_ArgsUse {
 		assertEquals(1,result.get(0).getLine());
 	}
 
-	@Ignore
 	@Test
 	public void testVarAndArgs_OK() throws ParseException, IOException{
 		final String cfcSrc = "<cfcomponent>\r\n" +
@@ -71,8 +72,7 @@ public class TestCFBugs_ArgsUse {
 		assertEquals(0,cfBugs.getBugs().getBugList().size());
 	}
 	
-
-	@Ignore
+	
 	@Test
 	public void testVarAndArgs_Struct() throws ParseException, IOException{
 		final String cfcSrc = "<cfcomponent>\r\n" +
@@ -86,8 +86,7 @@ public class TestCFBugs_ArgsUse {
 		assertEquals(0,cfBugs.getBugs().getBugList().size());
 	}
 
-
-	@Ignore
+	
 	@Test
 	public void testVarAndArgs_Cfscript_OK() throws ParseException, IOException{
 		final String cfcSrc="component { \r\n" + 
@@ -100,7 +99,6 @@ public class TestCFBugs_ArgsUse {
 		assertEquals(0,cfBugs.getBugs().getBugList().size());
 	}
 	
-	@Ignore
 	@Test
 	public void testVarAndArgs_MixedUse() throws ParseException, IOException{
 		final String cfcSrc = "<cfcomponent>\r\n" +
@@ -118,7 +116,6 @@ public class TestCFBugs_ArgsUse {
 		assertEquals(5,result.get(0).getLine());
 	}
 
-	@Ignore
 	@Test
 	public void testVarAndArgs_MixedUse_2x() throws ParseException, IOException{
 		final String cfcSrc = "<cfcomponent>\r\n" +
