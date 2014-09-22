@@ -14,7 +14,7 @@ import com.cflint.plugins.Context;
 @Extension
 public class CFDumpChecker implements CFLintScanner {
 	final String cfmlTagCheck = "cfdump";
-	final String severity = "ERROR";
+	final String severity = "COSMETIC";
 	final String messageCode = "AVOID_USING_" + cfmlTagCheck.toUpperCase() + "_TAG";
 	final String message = "Avoid Leaving<" + 
 							cfmlTagCheck +
