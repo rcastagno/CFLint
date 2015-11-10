@@ -27,6 +27,8 @@ import org.antlr.v4.runtime.atn.ATNConfigSet;
 import org.antlr.v4.runtime.dfa.DFA;
 
 import cfml.CFSCRIPTLexer;
+import cfml.CFSCRIPTParserVisitor;
+import cfml.CFSCRIPTParser.ScriptBlockContext;
 import cfml.parsing.CFMLParser;
 import cfml.parsing.CFMLSource;
 import cfml.parsing.cfscript.CFAssignmentExpression;
@@ -51,6 +53,7 @@ import cfml.parsing.cfscript.script.CFIfStatement;
 import cfml.parsing.cfscript.script.CFParsedStatement;
 import cfml.parsing.cfscript.script.CFReturnStatement;
 import cfml.parsing.cfscript.script.CFScriptStatement;
+import cfml.parsing.cfscript.walker.CFScriptStatementVisitor;
 import cfml.parsing.reporting.IErrorReporter;
 import cfml.parsing.reporting.ParseException;
 
@@ -256,14 +259,27 @@ public class CFLint implements IErrorReporter {
 	}
 	
 	int parserCounter = 1;
-
+	final CFScriptStatementVisitor scriptVisitor = new CFScriptStatementVisitor();
+	
 	public void process(final String src, final String filename) throws ParseException, IOException {
 		fireStartedProcessing(filename);
 		final CFMLSource cfmlSource = new CFMLSource(src);
 		final List<Element> elements = cfmlSource.getChildElements();
 		if (elements.size() == 0 && src.contains("component")) {
 			// Check if pure cfscript
-			final CFScriptStatement scriptStatement = cfmlParser.parseScript(src);
+			ScriptBlockContext scriptBlockContext = cfmlParser.parseScriptBlockContext(src);
+			
+			final CFScriptStatement scriptStatement = scriptVisitor.visit(scriptBlockContext);
+
+			for (final CFSCRIPTParserVisitor<Object> visitorPlugin : getParserVisitors(extensions)) {
+				try{
+					
+					visitorPlugin.visit(scriptBlockContext);
+				}catch(Exception e){
+					e.printStackTrace();
+				}
+			}
+			//final CFScriptStatement scriptStatement = cfmlParser.parseScript(src);
 			process(scriptStatement, filename, null, (String)null);
 		} else {
 			processStack(elements, " ", filename, null);
@@ -447,6 +463,17 @@ public class CFLint implements IErrorReporter {
 		}
 		return retval;
 	}
+	
+	@SuppressWarnings("unchecked")
+	private List<CFSCRIPTParserVisitor<Object>> getParserVisitors(final List<CFLintScanner> extensions) {
+		final List<CFSCRIPTParserVisitor<Object>> retval = new ArrayList<CFSCRIPTParserVisitor<Object>>();
+		for(CFLintScanner plugin: extensions)
+		if(plugin instanceof CFSCRIPTParserVisitor){
+			retval.add((CFSCRIPTParserVisitor<Object>) plugin);
+		}
+		return retval;
+	}
+	
 	private String shortSource(final Source source, final int line) {
 		final String retval = source == null ? "" : source.toString().trim();
 		if (retval.length() < 300) {

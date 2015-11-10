@@ -1,0 +1,16 @@
+[ {
+  "severity" : "INFO",
+  "id" : "BRACKETS_STYLE",
+  "message" : "BRACKETS_STYLE",
+  "category" : "CFLINT",
+  "abbrev" : "BS",
+  "location" : {
+    "file" : "",
+    "fileName" : "",
+    "column" : "0",
+    "line" : "4",
+    "message" : "Brackets should be formatted consistently.",
+    "variable" : "",
+    "expression" : ""
+  }
+} ]

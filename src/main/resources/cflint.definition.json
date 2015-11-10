@@ -750,6 +750,18 @@
         }
       ],
       "parameter": []
+    },
+    {     
+      "name": "BracketsStyleChecker",
+      "className": "com.cflint.plugins.visitors.BracketsStyleChecker",
+      "message": [
+        {
+          "code": "BRACKETS_STYLE",
+           "messageText": "Brackets should be formatted",
+          "severity": "INFO"
+        }
+      ],
+      "parameter": []
     }
   ]
 }

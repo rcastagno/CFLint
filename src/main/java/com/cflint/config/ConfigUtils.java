@@ -138,7 +138,7 @@ public class ConfigUtils {
 		final String shortClassName = ruleInfo.getClassName() != null
 				&& ruleInfo.getClassName().trim().length() > 0 ? ruleInfo
 				.getClassName() : ruleInfo.getName();
-		final String className = PLUGIN_PACKAGE + "." + shortClassName.trim();
+		final String className = (shortClassName.contains(".")?"":(PLUGIN_PACKAGE + ".")) + shortClassName.trim();
 		try {
 			final Class<?> pluginClass = Class.forName(className);
 			final CFLintScanner plugin = (CFLintScanner) pluginClass

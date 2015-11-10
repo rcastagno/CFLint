@@ -6,7 +6,7 @@ import cfml.parsing.cfscript.script.CFScriptStatement;
 
 import com.cflint.BugList;
 
-public interface CFLintScanner {
+public interface CFLintScanner extends CFLintStructureListener {
 
 	void expression(CFExpression expression, Context context, BugList bugs);
 

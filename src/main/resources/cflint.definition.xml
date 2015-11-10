@@ -345,5 +345,11 @@
 			<messageText>CWE-482: Comparing instead of Assigning</messageText>
 		</message>
 	</ruleImpl>
+	<ruleImpl name="BracketsStyleChecker" className="com.cflint.plugins.visitors.BracketsStyleChecker">
+		<message code="BRACKETS_STYLE">
+			<severity>INFO</severity>
+			<messageText>Brackets should be formatted consistently.</messageText>
+		</message>
+	</ruleImpl>
 	
 </CFLint-Plugin>
