@@ -259,7 +259,7 @@ public class CFLint implements IErrorReporter {
 	}
 
 	static String load(final File file) {
-		FileInputStream fis;
+		FileInputStream fis = null;
 		try {
 			fis = new FileInputStream(file);
 			final byte[] b = new byte[fis.available()];
@@ -267,6 +267,13 @@ public class CFLint implements IErrorReporter {
 			return new String(b);
 		} catch (final Exception e) {
 			return null;
+		} finally {
+			try {
+				if (fis != null)
+					fis.close();
+			} catch (IOException e) {
+				return null;
+			}
 		}
 	}
 
@@ -868,8 +875,8 @@ public class CFLint implements IErrorReporter {
 		if (configuration == null) {
 			throw new NullPointerException("Configuration is null");
 		}
-		PluginInfoRule ruleInfo = null;
-		if ("PLUGIN_ERROR".equals(msgcode)) {
+		PluginInfoRule ruleInfo;
+		if("PLUGIN_ERROR".equals(msgcode)){
 			ruleInfo = new PluginInfoRule();
 			PluginMessage msgInfo = new PluginMessage("PLUGIN_ERROR");
 			msgInfo.setMessageText("Error in plugin: ${variable}");

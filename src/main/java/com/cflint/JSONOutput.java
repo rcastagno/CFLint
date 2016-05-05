@@ -39,7 +39,7 @@ public class JSONOutput {
 				.entrySet()) {
 			final Iterator<BugInfo> iterator = bugEntry.getValue().iterator();
 			BugInfo bugInfo = iterator.hasNext() ? iterator.next() : null;
-			BugInfo prevbugInfo = null;
+			BugInfo prevbugInfo;
 
 			while (bugInfo != null) {
 				String severity = bugEntry.getValue().get(0).getSeverity();
