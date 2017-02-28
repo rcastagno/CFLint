@@ -1,6 +1,5 @@
 /cfbugs
 /bin
-/out
 /target
 /.classpath
 /.project
@@ -8,5 +7,3 @@
 .gradle/**/*
 /build
 .idea/
-/.gradle/
-*.iml
